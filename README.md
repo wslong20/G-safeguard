@@ -8,7 +8,7 @@
 
 We introduce **G-Safeguard**, the first security safeguard for LLM-based multi-agent systems. It is a topology-guided security lens and treatment for robust LLM-MAS, which leverages graph neural networks to detect anomalies on the multi-agent utterance graph and employ topological intervention for attack remediation. 
 
-![](./assets/framework-1.pdf)
+![](./assets/pipeline.png)
 
 ## 🛠 Quick Start
 
