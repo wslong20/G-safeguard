@@ -17,7 +17,7 @@ We introduce **G-Safeguard**, the first security safeguard for LLM-based multi-a
 ```bash
 conda create -n gsafeguard python=3.10
 conda activate gsafeguard
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
 ### Add API keys in `template.env` and change its name to `.env`
