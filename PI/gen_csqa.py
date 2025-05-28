@@ -16,13 +16,13 @@ def format_example(df, idx):
     return prompt, answer, wrong_answer
 
 
-def gen_csqa_datasets(data_dir, dataset_type: Literal["train", "validation", "test"]): 
+def gen_csqa_datasets(data_dir, phase: Literal["train", "validation", "test"]): 
     dataset = []
     splits = {'train': os.path.join(data_dir, 'train-00000-of-00001.parquet'), 
               'validation': os.path.join(data_dir, 'validation-00000-of-00001.parquet'),
               'test': os.path.join(data_dir, 'test-00000-of-00001.parquet')}
 
-    data_df = pd.read_parquet(splits[dataset_type])
+    data_df = pd.read_parquet(splits[phase])
     for i in range(data_df.shape[0]): 
         prompt, answer, wrong_answer = format_example(data_df, i)
         dataset.append((prompt, answer, wrong_answer))

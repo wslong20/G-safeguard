@@ -56,9 +56,14 @@ def gen_model_training_set(language_dataset, embedding_model, save_path):
 
 
 if __name__ == "__main__":
-    meta_dataset = "gsm8k"
-    data_dir = f"./agent_graph_dataset/{meta_dataset}/dataset.json"
-    save_dir = f"./ModelTrainingSet/{meta_dataset}"
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Experiments that generate dataset")
+    parser.add_argument("--dataset", type=str, default="mmlu", choices=["mmlu", "csqa", "gsm8k"])
+    args = parser.parse_args()
+
+    data_dir = "./agent_graph_dataset/{}/train/dataset.json".format(args.dataset)
+    save_dir = f"./ModelTrainingSet/{args.dataset}"
     if not os.path.exists(save_dir): 
         os.makedirs(save_dir)
     save_path = os.path.join(save_dir, "dataset.pkl")

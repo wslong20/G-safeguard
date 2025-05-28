@@ -1,14 +1,9 @@
 import os
 import asyncio
-import threading
 import numpy as np
 import re
-import random
 from openai import OpenAI, AsyncOpenAI
-import torch
 from typing import Literal
-from model import MyGAT
-from sentence_transformers import SentenceTransformer
 
 
 def llm_invoke(prompt, model_type: str): 

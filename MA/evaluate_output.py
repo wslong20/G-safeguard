@@ -6,6 +6,9 @@ from openai import OpenAI
 import os
 import re
 from tqdm import tqdm
+os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
+os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
+
 
 def extract_answer(text):
     pattern = r"<ANSWER>:\s*(.*?)(?:\.|$)" 
@@ -46,14 +49,19 @@ def cal_acc(agent_dialogue_dataset):
         question = data["query"]
         correct_answer = data["correct_answer"]
         attacker_idxes = data["attacker_idxes"]
-        for i in range(len(communciation_data)): 
-            turn_i_data = communciation_data[i]
-            for agent_idx, text in turn_i_data:
-                if agent_idx not in attacker_idxes:  
-                    result = judge_output(text, question, correct_answer)
-                    turns_total[i] += 1
-                    if result.is_success == 1: 
-                        turns_succ[i] += 1
+        try: 
+            for i in range(len(communciation_data)): 
+                turn_i_data = communciation_data[i]
+                
+                for agent_idx, text in turn_i_data:
+                    if agent_idx not in attacker_idxes:  
+                        result = judge_output(text, question, correct_answer)
+                        turns_total[i] += 1
+                        if result.is_success == 1: 
+                            turns_succ[i] += 1
+        except Exception as e:
+            print(e)
+            pass
     
     turns_sr = [turns_succ[i] / turns_total[i] for i in range(num_turns)]
     return turns_sr
@@ -74,3 +82,16 @@ def cal_recog_acc(agent_dialogue_dataset):
     
     turns_sr = [turns_succ[i] / total for i in range(num_turns)]
     return turns_sr
+
+if __name__ == "__main__": 
+    import json
+    res_dir = ""
+
+    with open(res_dir, "r") as f:
+        res_defense = json.load(f)
+    res_dir = ""
+    with open(res_dir, "r") as f:
+        res_no_defense = json.load(f)
+
+    print(cal_acc(res_defense))
+    print(cal_acc(res_no_defense))

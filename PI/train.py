@@ -70,14 +70,13 @@ def test(model, test_loader, criterion, device):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Experiments to train GAT")
 
-    parser.add_argument("--dataset_path", type=str, default="./ModelTrainingSet/gsm8k/dataset.pkl", help="Save path of the dataset")
-    
+    parser.add_argument("--dataset", type=str, default="mmlu")
     parser.add_argument("--hidden_dim", type=int, default=1024)
     parser.add_argument("--dropout", type=float, default=0.2)
     parser.add_argument("--num_heads", type=int, default=8)
     parser.add_argument("--num_layers", type=int, default=2)
 
-    parser.add_argument("--epochs", type=int, default=50)
+    parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--weight_decay", type=float, default=0.0002)
     parser.add_argument("--batch_size", type=int, default=32)
@@ -88,11 +87,17 @@ def parse_arguments():
 
     args = parser.parse_args()
 
-    dataset = args.dataset_path
-    dataset = dataset.split("/")
-    origin_dataset_name = dataset[-2]
-    args.save_dir = os.path.join(args.save_dir, origin_dataset_name)
+    if args.dataset == "mmlu": 
+        args.dataset_path = "./ModelTrainingSet/mmlu/dataset.pkl"
+    elif args.dataset == "csqa": 
+        args.dataset_path = "./ModelTrainingSet/csqa/dataset.pkl"
+    elif args.dataset == "gsm8k": 
+        args.dataset_path = "./ModelTrainingSet/gsm8k/dataset.pkl"
+    else: 
+        raise Exception(f"Unknown dataset {args.dataset}")
+    
 
+    args.save_dir = os.path.join(args.save_dir, args.dataset)
     if not os.path.exists(args.save_dir): 
         os.makedirs(args.save_dir)
 

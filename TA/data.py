@@ -14,7 +14,7 @@ class AgentGraphDataset(Dataset):
         if phase == "train": 
             self.dataset = origin_dataset[:int(origin_dataset_len*0.8)]
         elif phase == "val":
-            self.dataset = origin_dataset[int(origin_dataset_len*0.8):origin_dataset_len-60]
+            self.dataset = origin_dataset[int(origin_dataset_len*0.8):]
         else:
             raise Exception(f"Unknown phase {phase}")
     

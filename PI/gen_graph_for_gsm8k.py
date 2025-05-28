@@ -86,11 +86,11 @@ def generate_initial_data(ag_data, qa_data):
 
 async def generate_graph_dataset(args): 
     if args.dataset == "csqa": 
-        qa_dataset = gen_csqa_datasets(args.dataset_path, dataset_type="validation")
+        qa_dataset = gen_csqa_datasets(args.dataset_path, phase=args.phase)
     elif args.dataset == "mmlu":
-        qa_dataset = gen_mmlu_datasets(args.dataset_path, dataset_type="dev")
+        qa_dataset = gen_mmlu_datasets(args.dataset_path, phase=args.phase)
     elif args.dataset == "gsm8k": 
-        qa_dataset = gen_gsm8k_dataset(args.dataset_path, dataset_type="train")
+        qa_dataset = gen_gsm8k_dataset(args.dataset_path, phase=args.phase)
     else:
         raise Exception(f"Unknown dataset: {args.dataset}")
 
@@ -137,7 +137,6 @@ if __name__ == "__main__":
     def parse_arguments():
         parser = argparse.ArgumentParser(description="Experiments that generate dataset")
 
-        parser.add_argument("--dataset_path", type=str, default="./reasoning_datasets/gsm8k", help="The path to store the dataset")
         parser.add_argument("--dataset", type=str, default="gsm8k")
         parser.add_argument("--num_nodes", type=int, default=8)
         parser.add_argument("--sparsity", type=float, default=0.7, help="Sparsity of the edges (0 to 1), where higher values indicate denser graphs. 1 represents complete graph.")
@@ -147,16 +146,26 @@ if __name__ == "__main__":
         parser.add_argument("--samples", type=int, default=20)
         parser.add_argument("--save_dir", type=str, default="./agent_graph_dataset")
         parser.add_argument("--model_type", type=str, default="gpt-4o-mini")
-
+        parser.add_argument("--phase", type=str, default="test")
         parser.add_argument("--save_filepath", type=str)
 
         args = parser.parse_args()
-        args.save_dir = os.path.join(args.save_dir, args.dataset)
+
+        args.save_dir = os.path.join(args.save_dir, args.dataset, args.phase)
         if not os.path.exists(args.save_dir): 
             os.makedirs(args.save_dir)
         current_time_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        args.save_filepath = os.path.join(args.save_dir, f"dataset.json")
+        args.save_filepath = os.path.join(args.save_dir, f"{current_time_str}-dataset_size_{args.samples}-num_nodes_{args.num_nodes}-num_attackers_{args.num_attackers}-sparsity_{args.sparsity}.json")
 
+        if args.dataset == "mmlu": 
+            args.dataset_path = "./datasets/MMLU"
+        elif args.dataset == "csqa": 
+            args.dataset_path = "./datasets/commonsense_qa"
+        elif args.dataset == "gsm8k": 
+            args.dataset_path = "./datasets/gsm8k"
+        else: 
+            raise Exception(f"Unknown dataset {args.dataset}")
+        
         return args
     
 

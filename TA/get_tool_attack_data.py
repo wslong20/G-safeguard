@@ -16,7 +16,7 @@ def format_examples(dataset, idx, tool_dict):
     return user_instruction, available_tool_names, available_tool_descriptions,  agent_scratchpad, attacker_instruction, user_tools, attacker_tools
 
 
-def gen_injecagent_data(datapath): 
+def gen_injecagent_data(datapath, phase="train"): 
     dataset = []
     with open(datapath, "r") as f:
         data_json = json.load(f)
@@ -26,4 +26,9 @@ def gen_injecagent_data(datapath):
         example = format_examples(data_json, i, tool_dict)
         dataset.append(example)
     
+    if phase == "train": 
+        dataset = dataset[:int(len(dataset)*0.8)]
+    else:
+        dataset = dataset[int(len(dataset)*0.8):]
+        
     return dataset

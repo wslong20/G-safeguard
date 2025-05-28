@@ -15,7 +15,9 @@ import asyncio
 import copy
 import time
 from utils import get_adj_matrix
-
+import os
+os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
+os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
 
 def response2embeddings(responses): 
     embeddings = [None for _ in range(len(responses))]
@@ -80,11 +82,12 @@ async def defense_communication(ag:AgentGraphWithDefense, gnn: MyGAT, query, con
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Experiments to train GAT")
 
-    parser.add_argument("--dataset_path", type=str, default="./agent_graph_dataset/memory_attack/dataset.json", help="Save path of the dataset")
-    parser.add_argument("--graph_type", type=str, choices=["random", "chain", "tree", "star"], default="random")
-    parser.add_argument("--gnn_checkpoint_path", type=str, default=".\checkpoint\memory_attack\checkpoint.pth")
+    parser.add_argument("--dataset_path", type=str, default="./agent_graph_dataset/memory_attack/test/dataset.json", help="Save path of the dataset")
+    parser.add_argument("--graph_type", type=str, choices=["random", "chain", "tree", "star"], default="star")
+    parser.add_argument("--gnn_checkpoint_path", type=str)
     parser.add_argument("--save_dir", type=str, default="./result")
     parser.add_argument("--model_type", type=str, default="gpt-4o-mini")
+    parser.add_argument("--samples", type=int, default=60)
 
     args = parser.parse_args()
 
@@ -112,7 +115,7 @@ async def main():
     with open(filepath, "r") as f:
         dataset = json.load(f)
     dataset_len = len(dataset)
-    dataset = dataset[dataset_len-60:]
+    dataset = dataset[-args.samples:]
     num_dialogue_turns = len(dataset[0]["communication_data"])-1
 
 

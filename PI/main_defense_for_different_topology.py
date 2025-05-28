@@ -15,7 +15,8 @@ import asyncio
 import copy
 import time
 from utils import get_adj_matrix
-
+os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
+os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
 
 def response2embeddings(responses): 
     embeddings = [None for _ in range(len(responses))]
@@ -76,18 +77,26 @@ async def defense_communication(ag:AgentGraphWithDefense, gnn: MyGAT, qa_data, a
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Experiments to train GAT")
 
-    parser.add_argument("--dataset_path", type=str, default="./agent_graph_dataset/csqa/dataset.json", help="Save path of the dataset")
-    parser.add_argument("--graph_type", type=str, choices=["random", "chain", "tree", "star"], default="random")
-    parser.add_argument("--gnn_checkpoint_path", type=str, default=f".\checkpoint\csqa\checkpoint.path")
+    parser.add_argument("--dataset", type=str, default="mmlu")
+    parser.add_argument("--graph_type", type=str, choices=["random", "chain", "tree", "star"], default="chain")
+    parser.add_argument("--gnn_checkpoint_path", type=str, default="")
     parser.add_argument("--save_dir", type=str, default="./result")
     parser.add_argument("--model_type", type=str, default="gpt-4o-mini")
+    parser.add_argument("--samples", type=int, default=60)
 
     args = parser.parse_args()
 
-    dataset = args.dataset_path
-    dataset = dataset.split("/")
-    origin_dataset_name = dataset[-2]
-    args.save_dir = os.path.join(args.save_dir, origin_dataset_name, args.graph_type)
+
+    if args.dataset == "mmlu": 
+        args.dataset_path = "./agent_graph_dataset/mmlu/test/dataset.json"
+    elif args.dataset == "csqa": 
+        args.dataset_path = "./agent_graph_dataset/csqa/test/dataset.json"
+    elif args.dataset == "gsm8k": 
+        args.dataset_path = "./agent_graph_dataset/gsm8k/test/dataset.json"
+    else: 
+        raise Exception(f"Unknown dataset {args.dataset}")
+    
+    args.save_dir = os.path.join(args.save_dir, args.dataset, args.graph_type)
 
     if not os.path.exists(args.save_dir): 
         os.makedirs(args.save_dir)
@@ -108,7 +117,7 @@ async def main():
     with open(filepath, "r") as f:
         dataset = json.load(f)
     dataset_len = len(dataset)
-    dataset = dataset[dataset_len-60:]
+    dataset = dataset[-args.samples:]
     num_dialogue_turns = len(dataset[0]["communication_data"])-1
 
 

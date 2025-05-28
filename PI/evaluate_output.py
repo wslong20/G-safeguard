@@ -96,3 +96,17 @@ def cal_mas_acc(agent_dialogue_dataset, answer_type: Literal["choice", "number"]
     
     turns_mas_acc = [turn_correct_total[i] / len(agent_dialogue_dataset) for i in range(len(turn_correct))]
     return turns_mas_acc
+
+
+if __name__ == "__main__": 
+    import json
+    
+    res_dir = ""  # no defense result file path
+    with open(res_dir, "r") as f:
+        dataset = json.load(f)
+    print(cal_wrong(dataset, answer_type="choice"))
+
+    res_dir="" #  defense result file path
+    with open(res_dir, "r") as f:
+        dataset = json.load(f)
+    print(cal_wrong(dataset, answer_type="choice"))

@@ -14,9 +14,9 @@ def format_example_gsm8k(dataset, idx):
     answer = extract_answer(dataset[idx]["answer"])
     return question, answer
 
-def gen_gsm8k_dataset(data_dir, dataset_type: Literal["train", "test"]): 
+def gen_gsm8k_dataset(data_dir, phase: Literal["train", "test"]): 
     dataset = []
-    origin_dataset = load_dataset(data_dir, "main")[dataset_type]
+    origin_dataset = load_dataset(data_dir, "main")[phase]
     for i in range(origin_dataset.num_rows): 
         question, answer = format_example_gsm8k(origin_dataset, i)
         dataset.append((question, answer))

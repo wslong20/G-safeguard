@@ -54,7 +54,7 @@ def gen_model_training_set(language_dataset, embedding_model, save_path):
 
 if __name__ == "__main__":
     meta_dataset = "memory_attack"
-    data_dir = "./{}/dataset.json".format(meta_dataset)
+    data_dir = "./agent_graph_dataset/{}/train/dataset.json".format(meta_dataset)
     save_dir = f"./ModelTrainingSet/{meta_dataset}"
     if not os.path.exists(save_dir): 
         os.makedirs(save_dir)

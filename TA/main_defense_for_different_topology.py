@@ -76,12 +76,12 @@ async def defense_communication(ag:AgentGraphWithDefense, gnn: MyGAT, case, adj_
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Experiments to train GAT")
 
-    parser.add_argument("--dataset_path", type=str, default="./agent_graph_dataset/tool_attack\dataset.json", help="Save path of the dataset")
+    parser.add_argument("--dataset_path", type=str, default="./agent_graph_dataset/tool_attack/test/dataset.json", help="Save path of the dataset")
     parser.add_argument("--graph_type", type=str, choices=["random", "chain", "tree", "star"], default="random")
-    parser.add_argument("--gnn_checkpoint_path", type=str, default=r".\checkpoint\tool_attack\checkpoint.pth")
+    parser.add_argument("--gnn_checkpoint_path", type=str, default="./checkpoint/tool_attack/checkpoint.pth")
     parser.add_argument("--save_dir", type=str, default="./result")
     parser.add_argument("--model_type", type=str, default="gpt-4o-mini")
-
+    parser.add_argument("--samples", type=int, default=60)
     args = parser.parse_args()
 
     normalized_path = os.path.normpath(args.dataset_path)
@@ -108,7 +108,7 @@ async def main():
     with open(filepath, "r") as f:
         dataset = json.load(f)
     dataset_len = len(dataset)
-    dataset = dataset[dataset_len-60:]
+    dataset = dataset[-args.samples:]
     num_dialogue_turns = len(dataset[0]["communication_data"])-1
 
 

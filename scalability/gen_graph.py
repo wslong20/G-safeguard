@@ -13,6 +13,9 @@ from agents import AgentGraph
 import os
 import copy
 
+os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
+os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
+
 def generate_directed_graph_dataset(num_nodes, sparsity, num_graphs):
     if not (0 <= sparsity <= 1):
         raise ValueError("Sparsity must be a value between 0 and 1.")
@@ -90,7 +93,7 @@ def generate_initial_data(ag_data, example):
 
 
 async def generate_graph_dataset(args): 
-    cases_dataset = gen_poisonrag_data(args.dataset_path)[-10:]  
+    cases_dataset = gen_poisonrag_data(args.dataset_path, args.phase) 
     ag_dataset = generate_agent_graph_dataset(num_nodes=args.num_nodes, sparsity=args.sparsity, num_graphs=args.num_graphs, num_attackers=args.num_attackers)
     initial_dataset = []
     for agent_graph in tqdm(ag_dataset, desc="Generate meta data"):
@@ -120,8 +123,8 @@ async def generate_graph_dataset(args):
             d["communication_data"] = communication_data
             d["adj_matrix"] = d["adj_matrix"].tolist()
             final_dataset.append(d)
-        except:
-            print("Error")
+        except Exception as e:
+            print(e)
             continue
 
     with open(args.save_filepath, "w") as file:
@@ -138,25 +141,25 @@ if __name__ == "__main__":
     def parse_arguments():
         parser = argparse.ArgumentParser(description="Experiments that generate dataset")
 
-        parser.add_argument("--dataset_path", type=str, default="./data/msmarco.json", help="The path to store the dataset")
+        parser.add_argument("--dataset_path", type=str, default=r"./data/msmarco.json", help="The path to store the dataset")
         parser.add_argument("--dataset", type=str, default="memory_attack")
-        parser.add_argument("--num_nodes", type=int, default=80)
-        parser.add_argument("--sparsity", type=float, default=0.05, help="Sparsity of the edges (0 to 1), where higher values indicate denser graphs. 1 represents complete graph.")
-        parser.add_argument("--num_graphs", type=int, default=20)
-        parser.add_argument("--num_attackers", type=int, default=16)
+        parser.add_argument("--num_nodes", type=int, default=8)
+        parser.add_argument("--sparsity", type=float, default=0.2, help="Sparsity of the edges (0 to 1), where higher values indicate denser graphs. 1 represents complete graph.")
+        parser.add_argument("--num_graphs", type=int, default=20, help="The number of random topological structures")
+        parser.add_argument("--num_attackers", type=int, default=3)
         parser.add_argument("--num_dialogue_turns", type=int, default=3)
-        parser.add_argument("--samples", type=int, default=5)
-        parser.add_argument("--save_dir", type=str, default="./agent_graph_dataset_large")
+        parser.add_argument("--samples", type=int, default=40)
+        parser.add_argument("--save_dir", type=str, default="./agent_graph_dataset")
         parser.add_argument("--model_type", type=str, default="gpt-4o-mini")
-
+        parser.add_argument("--phase", type=str, default="test")
         parser.add_argument("--save_filepath", type=str)
 
         args = parser.parse_args()
-        args.save_dir = os.path.join(args.save_dir, args.dataset)
+        args.save_dir = os.path.join(args.save_dir, args.dataset, args.phase)
         if not os.path.exists(args.save_dir): 
             os.makedirs(args.save_dir)
         current_time_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        args.save_filepath = os.path.join(args.save_dir, f"dataset.json")
+        args.save_filepath = os.path.join(args.save_dir, f"{current_time_str}-dataset_size_{args.samples}-num_nodes_{args.num_nodes}-num_attackers_{args.num_attackers}-sparsity_{args.sparsity}.json")
 
         return args
     

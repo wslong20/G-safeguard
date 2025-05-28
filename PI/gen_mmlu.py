@@ -32,11 +32,11 @@ def gen_prompt(train_df, subject, k=-1):
     return prompt
 
 
-def gen_mmlu_datasets(data_dir, dataset_type: Literal["test", "dev", "val"]): 
+def gen_mmlu_datasets(data_dir, phase: Literal["test", "dev", "val"]): 
     dataset = []
-    subjects = sorted([f.split(f"_{dataset_type}.csv")[0] for f in os.listdir(os.path.join(data_dir, f"{dataset_type}")) if f"_{dataset_type}.csv" in f])
+    subjects = sorted([f.split(f"_{phase}.csv")[0] for f in os.listdir(os.path.join(data_dir, f"{phase}")) if f"_{phase}.csv" in f])
     for subject in subjects: 
-        data_df = pd.read_csv(os.path.join(data_dir, f"{dataset_type}", subject + f"_{dataset_type}.csv"), header=None)
+        data_df = pd.read_csv(os.path.join(data_dir, f"{phase}", subject + f"_{phase}.csv"), header=None)
         for i in range(data_df.shape[0]): 
             prompt, answer, wrong_answer = format_example(data_df, i)
             dataset.append((prompt, answer, wrong_answer))
