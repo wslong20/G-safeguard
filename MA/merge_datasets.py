@@ -4,7 +4,7 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description="Experiments that generate dataset")
-parser.add_argument("--root", type=str, default=r".\agent_graph_dataset\memory_attack")
+parser.add_argument("--root", type=str, default="./agent_graph_dataset/memory_attack")
 parser.add_argument("--phase", type=str, default="train")
 args = parser.parse_args()
 

@@ -13,8 +13,6 @@ from agents import AgentGraph
 import os
 import copy
 
-os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
-os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
 
 def generate_directed_graph_dataset(num_nodes, sparsity, num_graphs):
     if not (0 <= sparsity <= 1):

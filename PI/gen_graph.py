@@ -12,8 +12,7 @@ from tqdm import tqdm
 from gen_csqa import gen_csqa_datasets
 from gen_mmlu import gen_mmlu_datasets
 import os
-os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
-os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
+
 
 def generate_directed_graph_dataset(num_nodes, sparsity, num_graphs):
     """

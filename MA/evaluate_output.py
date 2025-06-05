@@ -6,9 +6,6 @@ from openai import OpenAI
 import os
 import re
 from tqdm import tqdm
-os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
-os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
-
 
 def extract_answer(text):
     pattern = r"<ANSWER>:\s*(.*?)(?:\.|$)" 

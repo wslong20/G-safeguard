@@ -11,8 +11,6 @@ from utils import get_tool_dict
 from gen_memory_attack_data import gen_poisonrag_data
 from agents import AgentGraph
 import os
-os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
-os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
 
 
 def generate_directed_graph_dataset(num_nodes, sparsity, num_graphs):

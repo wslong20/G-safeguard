@@ -30,9 +30,7 @@ if typing.TYPE_CHECKING:
     from typing import overload
 else:
     from torch.jit import _overload_method as overload
-from torch_geometric.nn import GENConv
-
-
+from torch_geometric.nn import GENConv, GATConv
 # Based on GATConv
 class GATwithEdgeConv(MessagePassing):
     def __init__(
@@ -275,7 +273,8 @@ class GATwithEdgeConv(MessagePassing):
                                   size=size)
 
         # propagate_type: (x: OptPairTensor, alpha: Tensor, edge_attr: OptTensor)
-        out, edge_attr = self.propagate(edge_index, x=x, alpha=alpha, edge_attr=edge_attr, size=size)
+        edge_attr = self.lin_edge_attr(edge_attr)
+        out = self.propagate(edge_index, x=x, alpha=alpha, edge_attr=edge_attr, size=size)
 
         if self.concat:
             out = out.view(-1, self.heads * self.out_channels)
@@ -323,10 +322,9 @@ class GATwithEdgeConv(MessagePassing):
         return alpha
     
     def message(self, x_j: Tensor, alpha: Tensor,  edge_attr: OptTensor) -> Tensor:
-        edge_attr = self.lin_edge_attr(edge_attr)
         edge_attr_multi_head = edge_attr.view(-1, self.heads, self.out_channels)
         msg = x_j + edge_attr_multi_head
-        return msg * alpha.unsqueeze(-1), edge_attr
+        return msg * alpha.unsqueeze(-1)
 
     def __repr__(self) -> str:
         return (f'{self.__class__.__name__}({self.in_channels}, '

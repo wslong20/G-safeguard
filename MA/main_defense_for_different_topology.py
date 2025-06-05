@@ -16,8 +16,7 @@ import copy
 import time
 from utils import get_adj_matrix
 import os
-os.environ["BASE_URL"] = 'https://api2.aigcbest.top/v1'
-os.environ["OPENAI_API_KEY"] = 'sk-iz4cyOsIWbpvsbunhwMXfnQ18UBSYj8484RUuawUdEqTMcig'
+
 
 def response2embeddings(responses): 
     embeddings = [None for _ in range(len(responses))]

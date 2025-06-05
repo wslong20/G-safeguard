@@ -10,22 +10,13 @@ class DiaglogueEmbeddingProcessModules(nn.Module):
         super().__init__()
         self.aggr_type = aggr_type
         self.add_time_emb = add_time_emb 
-        if add_time_emb: 
-            self.time_embedding = nn.Parameter(torch.randn(1, max_turns, edge_dim))
-        else: 
-            self.register_parameter("time_embedding", None)
 
     def forward(self, diag_emb: torch.Tensor): 
-        if self.add_time_emb:
-            current_turns = diag_emb.size()[1]
-            diag_emb = diag_emb[:, :current_turns, : ] + self.time_embedding[:, :current_turns, :]
-
         if self.aggr_type == "last":
             emb = diag_emb[:, -1, :]
         elif self.aggr_type == "mean":
             emb = diag_emb.mean(dim=1)
-        elif self.aggr_type == "concat": 
-            emb = rearrange(diag_emb, "b n d -> b (n d)")
+        # TODO: other method
         else: 
             raise Exception("Not a correct method of aggregation!")
         

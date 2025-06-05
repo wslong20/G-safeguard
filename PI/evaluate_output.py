@@ -101,7 +101,7 @@ def cal_mas_acc(agent_dialogue_dataset, answer_type: Literal["choice", "number"]
 if __name__ == "__main__": 
     import json
     
-    res_dir = ""  # no defense result file path
+    res_dir = ""  # no_defense result file path
     with open(res_dir, "r") as f:
         dataset = json.load(f)
     print(cal_wrong(dataset, answer_type="choice"))
